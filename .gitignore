@@ -1,0 +1,43 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log/OS Files
+*.log
+.DS_Store
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
+
+# IntelliJ
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Android Profiling
+*.hprof
+
+# Session scratch
+.scratch/
+.kotlin/
+
+# Round-by-round emulator captures (2+ GB) stay local; the curated set lives in docs/showcase
+docs/screenshots/
+!docs/screenshots/.gitkeep
+
+# Built deliverables (APK, video) are attached to GitHub Releases instead
+docs/showcase/*.apk
+docs/showcase/*.mp4

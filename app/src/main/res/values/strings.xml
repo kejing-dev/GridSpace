@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">GridSpace</string>
+
+    <!-- Entry window -->
+    <string name="entry_title">GridSpace</string>
+    <string name="projects">Projects</string>
+    <string name="lang_zh">中</string>
+    <string name="lang_en">EN</string>
+    <string name="editing_now">Editing</string>
+    <string name="no_other_projects">No other projects yet</string>
+    <string name="new_project">New blank project</string>
+    <string name="grid_size">Grid size</string>
+    <string name="before_start">Before you start</string>
+    <string name="step_1">Look at a cube</string>
+    <string name="step_2">Pinch and move</string>
+    <string name="step_3">Release to drop it into a cell</string>
+    <string name="recent_projects">Recent projects</string>
+    <string name="no_projects">No projects yet. Create one first.</string>
+    <string name="project_meta">%1$d cubes · %2$s</string>
+    <string name="file_corrupt">File damaged</string>
+    <string name="corrupt_snack">This project file is damaged and cannot be opened</string>
+    <string name="delete_project">Delete project</string>
+    <string name="delete_title">Delete %1$s?</string>
+    <string name="delete_body">This cannot be undone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="deleted_snack">Deleted %1$s</string>
+    <string name="untitled">Untitled %1$d</string>
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes">%1$d min ago</string>
+    <string name="time_hours">%1$d h ago</string>
+    <string name="time_yesterday">yesterday</string>
+    <string name="time_days">%1$d days ago</string>
+
+    <!-- Toolbar -->
+    <string name="mode_add">Add</string>
+    <string name="mode_erase">Erase</string>
+    <string name="mode_paint">Paint</string>
+    <string name="mode_select">Select</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="reset_view">Reset view</string>
+    <string name="slot_n">Colour slot %1$d</string>
+
+    <!-- Title augment -->
+    <string name="export">Export</string>
+    <string name="save_saving">Saving</string>
+    <string name="save_saved">Auto-saved</string>
+    <string name="save_failed">Save failed</string>
+    <string name="save_failed_snack">Save failed, check the storage space</string>
+    <string name="retry">Retry</string>
+
+    <!-- Colour picker -->
+    <string name="close">Close</string>
+    <string name="preset_soft">Soft</string>
+    <string name="preset_vivid">Vivid</string>
+    <string name="preset_earth">Earth</string>
+    <string name="hue">Hue</string>
+    <string name="saturation">Sat.</string>
+    <string name="lightness">Light</string>
+    <string name="pick_from_cube">Pick from cube</string>
+    <string name="done">Done</string>
+    <string name="eyedropper_hint">Tap a cube to pick its colour</string>
+    <string name="edit_colour">Edit colour</string>
+    <string name="edit_colour_slot">Edit colour · Slot %1$d</string>
+
+    <!-- Selection panel -->
+    <string name="selected_count">%1$d selected</string>
+    <string name="rotate_90">Rotate 90°</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="grid_move">Move by cell</string>
+    <string name="axis_x">X</string>
+    <string name="axis_y">Y</string>
+    <string name="axis_z">Z</string>
+    <string name="step_minus">Minus one</string>
+    <string name="step_plus">Plus one</string>
+    <string name="rotate_out_of_grid">Rotation would leave the grid</string>
+    <string name="no_room">No room for a copy</string>
+    <string name="selection_drag_hint">Drag a selected cube to move all</string>
+
+    <!-- Target label -->
+    <string name="label_aligned">✓ Aligned · release to place</string>
+    <string name="label_cell">X%1$d · Y%2$d · Z%3$d</string>
+    <string name="label_occupied">Cell occupied</string>
+    <string name="label_occupied_sub">Try another cell</string>
+    <string name="label_outside">Outside the grid</string>
+    <string name="label_grid_dims">%1$d × %1$d × %1$d</string>
+    <string name="label_release_erase">Release to erase</string>
+    <string name="label_release_paint">Release to paint</string>
+    <string name="label_release_place">Release to place</string>
+    <string name="brush_size">Size</string>
+    <string name="size_axis_x">W · X</string>
+    <string name="size_axis_y">H · Y</string>
+    <string name="size_axis_z">D · Z</string>
+    <string name="label_size_dims">%1$d × %2$d × %3$d</string>
+    <string name="label_large">Large, please wait</string>
+    <string name="label_move_delta">ΔX %1$s · ΔY %2$s · ΔZ %3$s</string>
+    <string name="label_move_hint">Drag to move all</string>
+    <string name="label_move_release">Release to move %1$d cubes</string>
+    <string name="label_move_overwrite">Release to move · overwrites %1$d</string>
+
+    <!-- Export sheet -->
+    <string name="export_format">Format</string>
+    <string name="export_vox">VOX · MagicaVoxel</string>
+    <string name="export_format_hint">Can be edited further in MagicaVoxel and similar tools</string>
+    <string name="export_filename">File name</string>
+    <string name="export_ext">.vox</string>
+    <string name="export_too_many_colours">More than 255 colours; similar colours will be merged on export</string>
+    <string name="export_to_device">Export to this device</string>
+    <string name="exporting">Exporting…</string>
+    <string name="export_done">Exported</string>
+    <string name="export_done_meta">Download/GridSpace/%1$s · %2$d cubes · %3$s</string>
+    <string name="export_failed">Export failed</string>
+    <string name="export_failed_reason">Export failed: %1$s</string>
+    <string name="export_snack">Exported to Download/GridSpace/%1$s</string>
+    <string name="size_kb">%1$d KB</string>
+
+    <!-- Demo -->
+    <string name="sample_project_name">Garden Pavilion</string>
+</resources>
