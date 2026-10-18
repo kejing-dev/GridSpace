@@ -37,8 +37,6 @@ import com.kejing.gridspace.domain.usecase.SelectionOps
 import com.kejing.gridspace.domain.usecase.VoxWriter
 import com.kejing.gridspace.ui.common.settleRedraw
 import com.kejing.gridspace.ui.common.signed
-import com.kejing.gridspace.domain.model.Axis
-import com.kejing.gridspace.ui.editor.components.AxisChip
 import com.kejing.gridspace.ui.editor.components.BrushRow
 import com.kejing.gridspace.ui.editor.components.BrushRowState
 import com.kejing.gridspace.ui.editor.components.ColorRail
@@ -53,7 +51,6 @@ import com.kejing.gridspace.ui.editor.components.FRONT_PLANE_SCALE
 import com.kejing.gridspace.ui.editor.components.LABEL_UI_SCALE
 import com.kejing.gridspace.ui.editor.components.ExportSheet
 import com.kejing.gridspace.ui.editor.components.LabelPlacement
-import com.kejing.gridspace.ui.editor.components.labelRes
 import com.kejing.gridspace.ui.editor.components.ProjectSheet
 import com.kejing.gridspace.ui.editor.components.SelectionPanel
 import com.kejing.gridspace.ui.editor.components.SelectionPanelState
@@ -228,7 +225,6 @@ internal fun EditorContent(state: EditorUiState, onEvent: (EditorEvent) -> Unit,
         val context = LocalContext.current
         var labelAnchor by remember { mutableStateOf<LabelPlacement?>(null) }
         var selectionAnchor by remember { mutableStateOf<Vec3?>(null) }
-        var axisTips by remember { mutableStateOf<Map<Axis, Vec3>>(emptyMap()) }
         val selectionCenter = if (state.selection.isEmpty()) null else SelectionOps.center(state.selection)
         val language = AppGraph.language.collectAsStateWithLifecycle()
 
@@ -245,10 +241,9 @@ internal fun EditorContent(state: EditorUiState, onEvent: (EditorEvent) -> Unit,
             labelCell = state.preview?.takeUnless { it is Preview.MoveSelection }?.anchorCell,
             selectionCenter = selectionCenter,
             onEvent = onEvent,
-            onAnchors = { label, sel, tips ->
+            onAnchors = { label, sel ->
                 labelAnchor = label
                 selectionAnchor = sel
-                axisTips = tips
             },
             modifier = Modifier.fillMaxSize(),
         )
@@ -316,18 +311,6 @@ internal fun EditorContent(state: EditorUiState, onEvent: (EditorEvent) -> Unit,
             }
         }
         TargetLabelAugment(preview = state.preview, anchor = labelAnchor, gridSize = project.gridSize, largeFill = state.largeFill)
-
-        // R11 axis letters (spec T.9): 56 x 56 design-dp chips on the front plane at the projected
-        // arrow tips, following the orbit like the target label. Fixed content, anchor-only updates.
-        for ((axis, tip) in axisTips) {
-            Augment(
-                anchor = NormalizedPoint3D(tip.x, tip.y, tip.z),
-                alignment = AugmentContentAlignment.Center,
-                offset = DpOffset3D(0.dp, 0.dp, 0.dp),
-            ) {
-                EditorScaled(FRONT_PLANE_SCALE) { AxisChip(letter = str(axis.labelRes())) }
-            }
-        }
 
         // R6: colour-edit card / eyedropper bar as Augments on the front plane beside the rail.
         val picker = state.picker

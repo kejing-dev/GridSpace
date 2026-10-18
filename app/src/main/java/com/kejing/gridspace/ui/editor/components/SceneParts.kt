@@ -98,17 +98,12 @@ internal object SceneParts {
         return list
     }
 
-    /** The three axis guides (bars + arrowheads, spec T.9) as one instanced entity; no collider. */
-    fun axisGuides(mesh: MeshResource, size: Int, material: Material): ModelEntity {
+    /** One axis line on the plate (spec T.9, R12) as a one-instance entity of the unit box; no collider. */
+    fun axisLine(mesh: MeshResource, line: AxisLines.Line, material: Material): ModelEntity {
         val entity = ModelEntity(mesh, material)
-        val identity = Quat.identity()
-        val instances = ArrayList<MeshInstancesResource.Instance>()
-        for (guide in AxisGuides.guides(size)) {
-            guide.boxes.forEachIndexed { i, box ->
-                instances.add(MeshInstancesResource.Instance("axis${guide.axis}$i", Transform(vector(box.center), identity, vector(box.size))))
-            }
-        }
-        entity.components[ModelComponent::class.java]?.meshInstances = MeshInstancesResource.create("axes", instances)
+        val box = line.box
+        val instance = MeshInstancesResource.Instance("axis${line.axis}", Transform(vector(box.center), Quat.identity(), vector(box.size)))
+        entity.components[ModelComponent::class.java]?.meshInstances = MeshInstancesResource.create("axis${line.axis}", listOf(instance))
         return entity
     }
 

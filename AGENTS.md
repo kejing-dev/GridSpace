@@ -174,27 +174,21 @@ Grep there before inventing an API.
   since R10, only shown while the toolbar's 尺寸 toggle is checked.
   Demo: walk step `size` (3 × 2 × 1 at (1, 0, 1), +6 cubes) replaced `bar` / `box`; the row of five
   at z 14 for the selection steps is now a silent 5 × 1 × 1 tap; probe script `gridspace_demo size`.
-- **Axis guides (R11, spec §T.9):** a small gizmo outside the near (+z) edge's midpoint — origin at
-  model (0, 0.04, N/2 + 0.6), X and Z bars 1.2 cells along +x / +z with arrowheads and letter chips
-  0.5 cell beyond the tips, no Y. It lies outside the grid, so cubes never occlude it and it never
-  covers the model. **The Volume clips scene content farther than ≈ 830–890 dp from the model
-  centre**: the plate corner (848 dp) still renders, the ±4.7-cell edge bars (≤ 770 dp) rendered,
-  but a gizmo beyond the plate corner (≥ 896 dp) vanished completely — keep every 3D marker
-  inside ≈ 800 dp (10.6 cells of a 16 grid). History: full plate-edge bars → near-edge bars (left
-  the frame) → back/right-edge bars (X hidden behind the model, its chip projected onto the roof)
-  → corner gizmo (clipped); all rejected or invisible. `AxisGuides`
-  pure geometry → `SceneParts.axisGuides` one instanced entity, colour `GridColors.AxisGuide`
-  #AAB9B8 opaque, lifted 0.04 cell above the plate, rebuilt in `rebuildPlate`; letters X/Z are two 56-dp `Augment` chips (`AxisChip`, `EditorScreen`) on the front plane at the
-  projected arrow tips (`LabelAnchor.projectToFront`, recomputed with yaw / pitch in
-  `VoxelSceneView.onAnchors`; clamped to x [0.03, 0.97], y [0.03, 0.80] — the lower part of the
-  front face is below the emulator frame, so a chip left at its natural y ≈ 0.85 was cut in half). The SDK attachment path was tried and rejected on the emulator:
-  `attachmentPanelComponent(size = panelSize(56.dp, 56.dp))` (foundation) + core
-  `AttachmentPanelComponent` / `LookAtComponent` (`setViewerAsTarget()`, `NEGATIVE_Z`) on tip
-  entities under the unscaled `root` creates three 112 × 112 px attachment windows at the right
-  positions, but each renders as a blank pale square — the Compose content never shows (even with
-  the components `remember`ed; a fresh instance per recomposition additionally churned the windows).
-  The demo cannot orbit (yaw is view-local, no event), so a
-  rotated-view capture is not possible from the CLI.
+- **Axis lines (R12, spec §T.9; replaces the R11 gizmo, which the user called too ugly):** two
+  flat opaque strips on the plate top, editor convention — X along the grid's z = 0 boundary
+  (model z = −N/2, back edge) from x = 0 to N in `GridColors.AxisX` #E07A5F (muted red), Z along
+  the x = 0 boundary (model x = −N/2, left edge) in `GridColors.AxisZ` #5B8DEF (muted blue);
+  0.06 cell wide, 0.02 tall, lifted 0.01 above the plate; no Y, no letters. **These two colours are
+  reserved for the axis lines** (colour discipline, spec K4.36). `AxisLines` pure geometry
+  (unit-tested) → `SceneParts.axisLine` one single-instance entity per axis (shared unit box, no
+  collider), rebuilt in `VoxelScene.rebuildPlate`, present in every mode; cubes may occlude them.
+  Removed with the gizmo: `AxisGuides`, `AxisChip`, `LabelAnchor.projectToFront` and the chip
+  Augments / `axisTips` anchor plumbing. Findings kept from R11: **the Volume clips scene content
+  farther than ≈ 830–890 dp from the model centre** (plate corner at 848 dp renders, a gizmo at
+  ≥ 896 dp vanished) — keep every 3D marker inside ≈ 800 dp; and the SDK attachment-panel path
+  (`attachmentPanelComponent(size = panelSize(…))` + `LookAtComponent`) creates correctly placed
+  windows on the emulator but renders their Compose content as a blank pale square. The demo
+  cannot orbit (yaw is view-local, no event), so a rotated-view capture is not possible from the CLI.
 - **Target-label placement (R6/R7, replaces the R3/R5 side rules):** `LabelAnchor.place()`
   (`ui/editor/components/LabelAnchor.kt`, unit-tested) hangs the 360 × 96 design-dp card
   (`label` 20 + 24 icon / `caption` 16) *above* the target on the front plane (z 0.92,

@@ -36,27 +36,6 @@ object LabelAnchor {
     const val Y_MIN = 0.08f
     const val Y_MAX = 0.97f
 
-    /**
-     * R11 axis-letter chips: a normalised model point projected onto the front plane with the same
-     * viewer rule as [place], no vertical shift, clamped so a 56-dp chip stays inside the face.
-     */
-    fun projectToFront(p: Vec3): Vec3 {
-        val s = (VIEWER_DISTANCE + (1f - Z)) / (VIEWER_DISTANCE + (1f - p.z))
-        val x = 0.5f + (p.x - 0.5f) * s
-        val y = 0.5f + (p.y - 0.5f) * s
-        return Vec3(x.coerceIn(CHIP_MARGIN, 1f - CHIP_MARGIN), y.coerceIn(CHIP_MARGIN, 1f - CHIP_MARGIN_BOTTOM), Z)
-    }
-
-    /** Half a 56-dp chip plus air, in normalised units of the 1600-dp face. */
-    const val CHIP_MARGIN = 0.03f
-
-    /**
-     * The lower part of the face lies below the emulator frame (the brush row sits 320 dp above
-     * the bottom edge and is the last visible strip; the frame ends at y ≈ 0.86): the +Z chip's
-     * natural spot (y ≈ 0.85) was cut in half, so it is held at y ≤ 0.80, just above its arrow tip.
-     */
-    const val CHIP_MARGIN_BOTTOM = 0.20f
-
     /** [centre]: the cell centre (normalised); [cellN]: one cell in normalised units. */
     fun place(centre: Vec3, cellN: Float): Vec3 {
         val s = (VIEWER_DISTANCE + (1f - Z)) / (VIEWER_DISTANCE + (1f - centre.z))

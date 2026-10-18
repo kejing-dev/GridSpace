@@ -19,8 +19,9 @@ object GridColors {
     val BaseInk = Color(0xFF2D383B)
     /** Base plate grid lines (3D). */
     val GridLine = Color(0xFF688681)
-    /** R11 axis guides and their letter chips: the grid-line hue brightened, one neutral for all three. */
-    val AxisGuide = Color(0xFFAAB9B8)
+    /** R12 axis lines on the plate (editor convention red = X, blue = Z); reserved for the axis lines only. */
+    val AxisX = Color(0xFFE07A5F)
+    val AxisZ = Color(0xFF5B8DEF)
     /** Placeholder tile colour for an empty project in the recent list. */
     val EmptyProject = Color(0xFF688681)
     /** Saving-in-progress dot in the title augment. */

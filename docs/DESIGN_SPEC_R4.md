@@ -855,21 +855,22 @@ SDK `Sheet` 内容宽固定 (实测 ≈ 410 dp, 1.19–1.31 px/dp)。`ProjectShe
 | 字串 | `toggle_size` 尺寸 / Size, `toggle_colour` 颜色 / Colour (`contentDescription`) |
 | 演示 | walk 在需要的步骤前显式切换 (size 步前开尺寸, vivid 前开颜色); 新脚本 `panels`: workbench (双关) → size → rail → dragmove → edit |
 
-### T.9 R11 坐标轴标注 (用户反馈: 尺寸行的 宽 X / 高 Y / 深 Z 与选区 ΔX·ΔY·ΔZ 需要可见的方向参照)
+### T.9 坐标轴线 (R12; 取代 R11 的坐标架, 用户评价后者太丑)
 
-`VoxelScene` 内的 3D 内容, 无碰撞体、不可交互、所有模式常驻; 几何在 `AxisGuides` (纯数据, 单测), 由 `SceneParts.axisGuides` 作为**一个实例化实体** (共享单位盒, 不新建网格) 随底座重建:
+用户反馈 (R11): 尺寸行的 宽 X / 高 Y / 深 Z 与选区 ΔX·ΔY·ΔZ 需要可见的方向参照。R11 的四版 (整边杆 → 近边杆 → 后边 / 右边杆 → 角外小坐标架带箭头与 X / Z 字母片) 均被否决; R12 改为**编辑器惯例: 底座网格上的两条扁平轴线**, 不再有杆、箭头、字母片 (`AxisChip` / `LabelAnchor.projectToFront` / 相关 Augment 已删; `axis_x` / `axis_z` 字串仍供选区面板用)。
+
+`VoxelScene` 内的 3D 内容, 无碰撞体、不可交互、所有模式常驻; 几何在 `AxisLines` (纯数据, 单测 `AxisLinesTest`), 由 `SceneParts.axisLine` 作为**每轴一个单实例实体** (共享单位盒, 不新建网格) 随底座重建:
 
 | 件 | 几何 (格单位, 原点 = 底座顶面中心) |
 | --- | --- |
-| 形式 | **近边中点小坐标架** (R11 最终): 原点在底座近边 (+z 边) 中点外侧 0.6 格, 模型 (0, 0.04, +N/2 + 0.6)。协调者的右角外侧原点 (N + 0.6, ·, N + 0.6) 实测不可见: Volume 把离中心 ≈ 830–890 dp 以外的内容裁掉 (底座角 848 dp 仍可见, 角外坐标架 ≥ 896 dp 整体消失), 故移到边中点 (645 dp) 并缩短 |
-| +X 杆 | 从原点沿 +x 1.2 格, 粗 0.08, 浮于底座顶面上 0.04 |
-| +Z 杆 | 从原点沿 +z 1.2 格, 同粗 (尖端 ≈ 790 dp, 在裁切半径内) |
-| +Y 杆 | **无** (竖杆与字母挡住模型) |
-| 位置理由 | 整个坐标架在网格外 (z > N/2): 方块永远挡不住它, 它也永远不压模型; 之前沿整边 / 近边的杆在默认视点下出画, 沿后边的杆被亭子挡住、字母投影在屋顶上 |
-| 箭头 | 每杆 + 端三个递缩方块 0.35 / 0.25 / 0.15 连续堆叠; 尖端 = 原点 + 1.95 格, 字母 = 原点 + 2.45 格 |
-| 颜色 | 全部一色 `GridColors.AxisGuide` #AAB9B8, 不透明 (85 % 时 0.08 格的杆在底座玻璃上几乎不可辨; 网格线色提亮, 不用 Mint / Coral) |
-| 不相交 | 所有盒都在 z ≥ N/2 且 y ≥ 0.04, 尖端半径 ≤ 10.6 格 (单测 `AxisGuidesTest`) |
-| 字母 | X / Z (`axis_x` / `axis_z`) 在尖端外 0.5 格。**实现 = 两个 `Augment` 小片** (56 × 56 设计 dp, 前面平面 scale 1.0, `AugmentContentAlignment.Center`, 锚点 = 尖端点按 `LabelAnchor.projectToFront` 投影到 z 0.92 面并夹到 x [0.03, 0.97], y [0.03, **0.80**] (面的下部在模拟器画面外: 笔刷行在底边上 320 dp 已是画面最后一条, 画面下缘 ≈ y 0.86; +Z 圆片的自然位置 ≈ 0.85 被切半, 夹到 0.80 后完整可见, 正好贴在箭头尖端上方), 随 yaw / pitch 每帧重算, 与目标标签同一套投影): 轴色圆片 (#AAB9B8 @ 85 %) 上 `label` 20 M `BaseInk` 字母。SDK 路径已验证存在但在模拟器上不可用: `attachmentPanelComponent(size = panelSize(56.dp, 56.dp))` + `LookAtComponent(setViewerAsTarget, NEGATIVE_Z)` 挂在尖端实体上能建出 112 × 112 px 的附着窗 (logcat `isViewAttachment=true`), 位置正确, 但窗内只渲染一块空白浅色方片, Compose 内容 (圆片 + 字母) 不出现 → 按本节备选用 Augment |
+| X 轴线 | 底座顶面上沿网格 **z = 0 边界线** (模型 z = −N/2, 后边), 从 x = 0 到 x = N (模型 −N/2..+N/2); 宽 0.06 格 (网格线 ≈ 0.02 格, 同类但更宽), 高 0.02 格 (扁平), 底面浮于底座顶面上 0.01 格 (中心 y = 0.02); 颜色 `GridColors.AxisX` **#E07A5F 哑红, 不透明** (`UnlitMaterial`, 非透明混合) |
+| Z 轴线 | 沿 **x = 0 边界线** (模型 x = −N/2, 左边), 从 z = 0 到 z = N, 同几何; 颜色 `GridColors.AxisZ` **#5B8DEF 哑蓝, 不透明** |
+| Y | 无; 无字母 (编辑器惯例红 = X, 蓝 = Z, 不需标注) |
+| 遮挡 | 方块可以自然地遮住轴线 (线在网格内, 不浮出); 轴线不压任何东西 (只高出底座 0.03 格) |
+| 颜色纪律 | **#E07A5F / #5B8DEF 两色只用于这两条轴线** (K4.36 扩展); Mint / Coral / SelectionWhite 的角色不变 |
+| 单测 | X 线沿 z = −N/2 跨 x −N/2..+N/2, Z 线沿 x = −N/2 跨 z; 高 0.02 < 宽 0.06, 底在 0.01; 都在底座内 (也在 Volume ≈ 830 dp 的裁切半径内, 见 R11 结论); 无 Y |
+
+R11 留下的事实 (仍有效, 供后续 3D 标记参考): Volume 把离模型中心 ≈ 830–890 dp 以外的场景内容裁掉 (底座角 848 dp 可见, 角外 ≥ 896 dp 消失); SDK `attachmentPanelComponent` + `LookAtComponent` 在模拟器上只渲染空白方片, Compose 内容不出现 (`docs/screenshots/r11/probe/`)。
 
 ---
 
@@ -940,7 +941,7 @@ SDK `Sheet` 内容宽固定 (实测 ≈ 410 dp, 1.19–1.31 px/dp)。`ProjectShe
 | `r4-lang-toggle.png` (仅 zh 套) | 中文工作台切到 EN 后一帧, 卡片尺寸不变 | — |
 
 35. [E] 每张截图用 `docs/scripts/cap.sh` 的黑块重试规则, 新建窗口 (Augment / Popup / Sheet) 出现后 ≥ 1.5 s 再拍 (AGENTS)。
-36. [C] 颜色纪律 (v1.0 §I.1 / K.40) 扩展: `Coral` 新增用途仅 "占用落点高亮" 与 "拖动覆盖线框"; `Mint` 新增用途仅 "可放置落点高亮 / 引导柱" 与 "正在编辑 文字"; `SelectionWhite` 新增 "拖动落点包围"; 其它颜色角色未改。
+36. [C] 颜色纪律 (v1.0 §I.1 / K.40) 扩展: `Coral` 新增用途仅 "占用落点高亮" 与 "拖动覆盖线框"; `Mint` 新增用途仅 "可放置落点高亮 / 引导柱" 与 "正在编辑 文字"; `SelectionWhite` 新增 "拖动落点包围"; 其它颜色角色未改。R12: `AxisX` #E07A5F / `AxisZ` #5B8DEF 仅用于底座上的两条坐标轴线 (§T.9), 不得用于任何控件或高亮。
 37. [C] 无新增依赖 (`gradle/libs.versions.toml` 与 `app/build.gradle.kts` 未变); 字体从 assets 读取, 不用 `androidx.compose.ui.text.googlefonts`。
 
 **§R 修订 (2026-10-13 用户反馈)**

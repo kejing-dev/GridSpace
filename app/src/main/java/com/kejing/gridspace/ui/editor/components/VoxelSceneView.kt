@@ -26,7 +26,6 @@ import com.kejing.gridspace.ui.editor.DragRouting
 import com.kejing.gridspace.ui.editor.EditorEvent
 import com.kejing.gridspace.ui.editor.Preview
 import com.kejing.gridspace.ui.editor.SceneHit
-import com.kejing.gridspace.domain.model.Axis
 import com.pico.spatial.ui.foundation.content.SpatialView
 import com.pico.spatial.ui.foundation.gesture.TargetEntity
 import com.pico.spatial.ui.foundation.gesture.detectSpatialDragGesture
@@ -62,11 +61,8 @@ fun VoxelSceneView(
     labelCell: Cell?,
     selectionCenter: Cell?,
     onEvent: (EditorEvent) -> Unit,
-    /**
-     * Label placement, the selection anchor and the three axis-letter anchors (R11, projected arrow
-     * tips), all in normalised Volume coordinates (0..1, y down).
-     */
-    onAnchors: (label: LabelPlacement?, selection: Vec3?, axisTips: Map<Axis, Vec3>) -> Unit,
+    /** Label placement and the selection anchor, in normalised Volume coordinates (0..1, y down). */
+    onAnchors: (label: LabelPlacement?, selection: Vec3?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -137,13 +133,7 @@ fun VoxelSceneView(
             fun viewOf(cell: Cell): Vec3 = CameraMath.localToView(CameraMath.cellCenter(cell, n), rootPos, yaw, pitch, cellMeters * zoom)
             fun normalised(v: Vec3): Vec3 = Vec3(0.5f + v.x / widthM, 0.5f - v.y / heightM, 0.5f + v.z / widthM)
             val label = labelCell?.let { cell -> LabelPlacement(LabelAnchor.place(normalised(viewOf(cell)), cellMeters * zoom / heightM)) }
-            // R11: the X / Y / Z letter chips are Augments on the front plane, anchored at the
-            // projected arrow tips (the SDK attachment panel drew a blank square on the emulator).
-            val tips =
-                AxisGuides.guides(n).associate { g ->
-                    g.axis to LabelAnchor.projectToFront(normalised(CameraMath.localToView(g.label, rootPos, yaw, pitch, cellMeters * zoom)))
-                }
-            onAnchors(label, selectionCenter?.let { normalised(viewOf(it)) }, tips)
+            onAnchors(label, selectionCenter?.let { normalised(viewOf(it)) })
         }
 
         var dragKind = remember { DragKind.NONE }
