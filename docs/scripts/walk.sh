@@ -20,7 +20,8 @@ adb shell am force-stop com.kejing.gridspace
 adb shell settings put global gridspace_demo "$SCRIPT"
 adb shell settings delete global gridspace_demo_ack >/dev/null
 adb logcat -c
-pico-cli app launch com.kejing.gridspace >/dev/null 2>&1
+# ANDROID_SERIAL pins the emulator when two are attached (adb honours it; pico-cli needs -d).
+pico-cli app launch ${ANDROID_SERIAL:+-d "$ANDROID_SERIAL"} com.kejing.gridspace >/dev/null 2>&1
 seen=""
 deadline=$((SECONDS + 600))
 while [ $SECONDS -lt $deadline ]; do

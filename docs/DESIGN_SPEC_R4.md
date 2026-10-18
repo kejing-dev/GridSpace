@@ -861,14 +861,15 @@ SDK `Sheet` 内容宽固定 (实测 ≈ 410 dp, 1.19–1.31 px/dp)。`ProjectShe
 
 | 件 | 几何 (格单位, 原点 = 底座顶面中心) |
 | --- | --- |
-| 前提 | 底座 1200 dp 大于 1600 dp Volume 的内切圆 (角到中心 848 dp > 800), 角与边端在任意 yaw 下都会被 Volume 裁掉 (§T.3 已注); 因此导线不沿整边, 而是**以边中点为中心**, 全部落在中心半径 ≤ 10.4 格 (780 dp) 内, 任意 yaw 可见 |
-| +X 杆 | 近边外侧 z = −N/2 − 0.35, x ∈ ±4.7 (以边中点为中心), 粗 0.08, 浮于底座顶面上 0.04 (y 0.04..0.12) |
-| +Z 杆 | 左边外侧 x = −N/2 − 0.35, z ∈ ±4.7, 同粗 |
-| +Y 杆 | **无** (用户反馈: 竖杆与字母挡住模型; 只保留底座上的 X / Z) |
-| 箭头 | 每杆 + 端三个递缩方块 0.35 / 0.25 / 0.15 连续堆叠; 尖端 = 杆端 + 0.75 (X / Z: 5.45 格) |
+| 形式 | **近边中点小坐标架** (R11 最终): 原点在底座近边 (+z 边) 中点外侧 0.6 格, 模型 (0, 0.04, +N/2 + 0.6)。协调者的右角外侧原点 (N + 0.6, ·, N + 0.6) 实测不可见: Volume 把离中心 ≈ 830–890 dp 以外的内容裁掉 (底座角 848 dp 仍可见, 角外坐标架 ≥ 896 dp 整体消失), 故移到边中点 (645 dp) 并缩短 |
+| +X 杆 | 从原点沿 +x 1.2 格, 粗 0.08, 浮于底座顶面上 0.04 |
+| +Z 杆 | 从原点沿 +z 1.2 格, 同粗 (尖端 ≈ 790 dp, 在裁切半径内) |
+| +Y 杆 | **无** (竖杆与字母挡住模型) |
+| 位置理由 | 整个坐标架在网格外 (z > N/2): 方块永远挡不住它, 它也永远不压模型; 之前沿整边 / 近边的杆在默认视点下出画, 沿后边的杆被亭子挡住、字母投影在屋顶上 |
+| 箭头 | 每杆 + 端三个递缩方块 0.35 / 0.25 / 0.15 连续堆叠; 尖端 = 原点 + 1.95 格, 字母 = 原点 + 2.45 格 |
 | 颜色 | 全部一色 `GridColors.AxisGuide` #AAB9B8, 不透明 (85 % 时 0.08 格的杆在底座玻璃上几乎不可辨; 网格线色提亮, 不用 Mint / Coral) |
-| 不相交 | 杆在底座外 0.31..0.39 格, 不与底座或 (0, y, z) / (x, y, 0) 的方块相交; 半径 ≤ 10.4 格 (单测 `AxisGuidesTest`) |
-| 字母 | X / Z (`axis_x` / `axis_z`) 在尖端外 0.5 格。**实现 = 两个 `Augment` 小片** (56 × 56 设计 dp, 前面平面 scale 1.0, `AugmentContentAlignment.Center`, 锚点 = 尖端点按 `LabelAnchor.projectToFront` 投影到 z 0.92 面并夹到 [0.03, 0.97], 随 yaw / pitch 每帧重算, 与目标标签同一套投影): 轴色圆片 (#AAB9B8 @ 85 %) 上 `label` 20 M `BaseInk` 字母。SDK 路径已验证存在但在模拟器上不可用: `attachmentPanelComponent(size = panelSize(56.dp, 56.dp))` + `LookAtComponent(setViewerAsTarget, NEGATIVE_Z)` 挂在尖端实体上能建出 112 × 112 px 的附着窗 (logcat `isViewAttachment=true`), 位置正确, 但窗内只渲染一块空白浅色方片, Compose 内容 (圆片 + 字母) 不出现 → 按本节备选用 Augment |
+| 不相交 | 所有盒都在 z ≥ N/2 且 y ≥ 0.04, 尖端半径 ≤ 10.6 格 (单测 `AxisGuidesTest`) |
+| 字母 | X / Z (`axis_x` / `axis_z`) 在尖端外 0.5 格。**实现 = 两个 `Augment` 小片** (56 × 56 设计 dp, 前面平面 scale 1.0, `AugmentContentAlignment.Center`, 锚点 = 尖端点按 `LabelAnchor.projectToFront` 投影到 z 0.92 面并夹到 x [0.03, 0.97], y [0.03, **0.80**] (面的下部在模拟器画面外: 笔刷行在底边上 320 dp 已是画面最后一条, 画面下缘 ≈ y 0.86; +Z 圆片的自然位置 ≈ 0.85 被切半, 夹到 0.80 后完整可见, 正好贴在箭头尖端上方), 随 yaw / pitch 每帧重算, 与目标标签同一套投影): 轴色圆片 (#AAB9B8 @ 85 %) 上 `label` 20 M `BaseInk` 字母。SDK 路径已验证存在但在模拟器上不可用: `attachmentPanelComponent(size = panelSize(56.dp, 56.dp))` + `LookAtComponent(setViewerAsTarget, NEGATIVE_Z)` 挂在尖端实体上能建出 112 × 112 px 的附着窗 (logcat `isViewAttachment=true`), 位置正确, 但窗内只渲染一块空白浅色方片, Compose 内容 (圆片 + 字母) 不出现 → 按本节备选用 Augment |
 
 ---
 
