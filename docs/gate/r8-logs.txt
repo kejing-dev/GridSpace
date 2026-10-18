@@ -1,0 +1,20 @@
+== zh
+PASS  no app crash/ANR in r8-logcat-walk.txt
+PASS  no app crash/ANR in r8-logcat-export.txt
+steps: ghost occupied size erase paint selection dragmove dragmove-commit rotate duplicate stepx delete vivid edit eyedrop edit-close lang lang-back undo burst redo reset export exported projects done 
+PASS  step order matches
+PASS  walk reached done
+WARN  1 frames without a clean capture (emulator black quad): r8-burst-2.png 
+WARN  2 png files have no cap.sh record in run.log (re-captures must be appended)
+anr:  2026-10-06 21:06 trace_00  (compare with the run date; a fresh trace = ANR during the run)
+
+== en
+PASS  no app crash/ANR in r8-logcat-walk.txt
+PASS  no app crash/ANR in r8-logcat-export.txt
+steps: ghost occupied size erase paint selection dragmove dragmove-commit rotate duplicate stepx delete vivid edit eyedrop edit-close lang lang-back undo burst redo reset export exported projects done 
+PASS  step order matches
+PASS  walk reached done
+WARN  1 frames without a clean capture (emulator black quad): r8-burst-4.png 
+WARN  1 png files have no cap.sh record in run.log (re-captures must be appended)
+anr:  2026-10-06 21:06 trace_00  (compare with the run date; a fresh trace = ANR during the run)
+

@@ -1,0 +1,93 @@
+{
+  "app": "GridSpace",
+  "round": 8,
+  "at": 1792283107122,
+  "checks": [
+    {
+      "id": "build",
+      "label": "build",
+      "result": "SKIP",
+      "detail": "gate.sh 未跑"
+    },
+    {
+      "id": "tests",
+      "label": "tests",
+      "result": "SKIP",
+      "detail": "gate.sh 未跑 (或 --no-build)"
+    },
+    {
+      "id": "dex",
+      "label": "dex",
+      "result": "PASS",
+      "detail": "1 项 · dex ok (app/build/outputs/apk/debug/app-debug.apk)"
+    },
+    {
+      "id": "strings",
+      "label": "strings",
+      "result": "PASS",
+      "detail": "8 项 · no Material imports"
+    },
+    {
+      "id": "px",
+      "label": "px阈值",
+      "result": "PASS",
+      "detail": "14 项 · px zh entry primary button 572×105 px"
+    },
+    {
+      "id": "occlusion",
+      "label": "遮挡",
+      "result": "SKIP",
+      "detail": "occlusion.py 未跑"
+    },
+    {
+      "id": "logs",
+      "label": "日志",
+      "result": "WARN",
+      "detail": "12 项 · 1 frames without a clean capture (emulator black quad): r8-burst-2.png"
+    },
+    {
+      "id": "data",
+      "label": "数据",
+      "result": "SKIP",
+      "detail": "数据校验未跑"
+    }
+  ],
+  "lines": [
+    "PASS  dex ok (app/build/outputs/apk/debug/app-debug.apk)",
+    "PASS  no Material imports",
+    "PASS  no Bold/SemiBold/W600/W700 names",
+    "PASS  no long press",
+    "PASS  no backgroundMaterial / hoverable / googlefonts",
+    "PASS  no CJK literals in Kotlin",
+    "PASS  no hard-coded Text(\"...\")",
+    "PASS  strings key sets identical (104 keys)",
+    "PASS  libs.versions.toml identical to C:/Users/Admin/Downloads/GridSpace",
+    "PASS  dependency block identical to C:/Users/Admin/Downloads/GridSpace",
+    "PASS  no app crash/ANR in r8-logcat-walk.txt",
+    "PASS  no app crash/ANR in r8-logcat-export.txt",
+    "PASS  step order matches",
+    "PASS  walk reached done",
+    "WARN  1 frames without a clean capture (emulator black quad): r8-burst-2.png",
+    "WARN  2 png files have no cap.sh record in run.log (re-captures must be appended)",
+    "PASS  no app crash/ANR in r8-logcat-walk.txt",
+    "PASS  no app crash/ANR in r8-logcat-export.txt",
+    "PASS  step order matches",
+    "PASS  walk reached done",
+    "WARN  1 frames without a clean capture (emulator black quad): r8-burst-4.png",
+    "WARN  1 png files have no cap.sh record in run.log (re-captures must be appended)",
+    "PASS  px zh entry primary button 572×105 px",
+    "PASS  px zh rail 96×95 px",
+    "PASS  px zh label card ghost 558×158 px",
+    "PASS  px zh label card occupied 590×156 px",
+    "PASS  px zh brush row stepper 117×28 px",
+    "PASS  px zh colour card 888×992 px",
+    "PASS  px zh colour card black band under Done share 0.000",
+    "PASS  px en entry primary button 572×105 px",
+    "PASS  px en rail 96×95 px",
+    "PASS  px en label card ghost 553×158 px",
+    "PASS  px en label card occupied 591×156 px",
+    "PASS  px en brush row stepper 117×28 px",
+    "PASS  px en colour card 888×990 px",
+    "PASS  px en colour card black band under Done share 0.000"
+  ]
+}

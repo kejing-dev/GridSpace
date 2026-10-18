@@ -28,6 +28,16 @@ class EditorSession {
 }
 
 /**
+ * R10: which editor side panels the user has opened from the toolbar (size row, colour rail).
+ * Remembered for the process (every editor Volume of this session starts with the last choice),
+ * never persisted; both default to closed.
+ */
+class PanelMemory {
+    @Volatile var showSizeRow: Boolean = false
+    @Volatile var showColorRail: Boolean = false
+}
+
+/**
  * Process-wide singletons. Both windows share one repository so the recent list in the entry
  * window reflects saves made by the editor without any extra messaging, and one language flow so
  * a switch in either window restyles both (spec Q.1).
@@ -40,6 +50,8 @@ object AppGraph {
         private set
 
     val editorSession = EditorSession()
+
+    val panels = PanelMemory()
 
     private lateinit var appContext: Context
 

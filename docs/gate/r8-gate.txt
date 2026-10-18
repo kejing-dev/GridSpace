@@ -1,0 +1,12 @@
+SpatialApplication refs: 3
+PASS  dex ok (app/build/outputs/apk/debug/app-debug.apk)
+PASS  no Material imports
+PASS  no Bold/SemiBold/W600/W700 names
+PASS  no long press
+PASS  no backgroundMaterial / hoverable / googlefonts
+PASS  no CJK literals in Kotlin
+PASS  no hard-coded Text("...")
+PASS  strings key sets identical (104 keys)
+PASS  libs.versions.toml identical to C:/Users/Admin/Downloads/GridSpace
+PASS  dependency block identical to C:/Users/Admin/Downloads/GridSpace
+info: 5 spatialHoverEffect vs 0 custom clickable modifiers (every custom clickable container needs one)

@@ -45,6 +45,8 @@ class VoxelScene {
     private var popCells: Set<Cell> = emptySet()
 
     private var plate: ModelEntity? = null
+    /** R11 axis guides: bars + arrowheads as one instanced entity (the letters are Augments, see EditorScreen). */
+    private var axes: ModelEntity? = null
     private var lines: ModelEntity? = null
     private val catcher: Entity = Entity()
     private var ghost: ModelEntity? = null
@@ -115,6 +117,7 @@ class VoxelScene {
             setScaleVector(Vector3(cellMeters * zoom))
             setQuaternion(Quat(Vector3(1f, 0f, 0f), pitch) * Quat(Vector3(0f, 1f, 0f), yaw))
         }
+
         catcher.components[TransformComponent::class.java]?.setPosition(Vector3(0f, 0f, catcherZ))
         if (!catcher.components.has(com.pico.spatial.core.ecs.CollisionComponent::class.java)) {
             SceneParts.interactable(catcher, catcherSize)
@@ -219,6 +222,8 @@ class VoxelScene {
             SceneParts.gridLines(mesh(), size, 1.5f / cellDp, SceneParts.unlit(SceneParts.color4(GridColors.GridLine, 0.4f), transparent = true)).also {
                 model.addChild(it)
             }
+        axes?.destroy(true)
+        axes = SceneParts.axisGuides(mesh(), size, SceneParts.unlit(SceneParts.color4(GridColors.AxisGuide, AXIS_ALPHA), transparent = true)).also { model.addChild(it) }
         ghost?.destroy(true)
         wire?.destroy(true)
         occupiedFill?.destroy(true)
@@ -431,6 +436,7 @@ class VoxelScene {
         const val FOOTPRINT_ALPHA = 0.55f
         const val MOVE_FOOTPRINT_ALPHA = 0.35f
         const val GUIDE_SIDE = 0.10f
+        const val AXIS_ALPHA = 1.0f
         const val GUIDE_ALPHA = 0.30f
         /** Drag-move: originals blended halfway to BaseInk (spec R4 O.2.3). */
         const val MOVE_DIM_WEIGHT = 0.5f

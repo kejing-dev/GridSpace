@@ -98,6 +98,20 @@ internal object SceneParts {
         return list
     }
 
+    /** The three axis guides (bars + arrowheads, spec T.9) as one instanced entity; no collider. */
+    fun axisGuides(mesh: MeshResource, size: Int, material: Material): ModelEntity {
+        val entity = ModelEntity(mesh, material)
+        val identity = Quat.identity()
+        val instances = ArrayList<MeshInstancesResource.Instance>()
+        for (guide in AxisGuides.guides(size)) {
+            guide.boxes.forEachIndexed { i, box ->
+                instances.add(MeshInstancesResource.Instance("axis${guide.axis}$i", Transform(vector(box.center), identity, vector(box.size))))
+            }
+        }
+        entity.components[ModelComponent::class.java]?.meshInstances = MeshInstancesResource.create("axes", instances)
+        return entity
+    }
+
     /** Grid lines on the plate top as one instanced entity: (n + 1) lines along X and along Z. */
     fun gridLines(mesh: MeshResource, size: Int, width: Float, material: Material): ModelEntity {
         val entity = ModelEntity(mesh, material)

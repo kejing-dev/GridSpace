@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Painter's palette: a round plate with a thumb notch and four paint dots. -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c0.83 0 1.5-0.67 1.5-1.5 0-0.39-0.15-0.74-0.39-1.01-0.23-0.26-0.38-0.61-0.38-0.99 0-0.83 0.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.14 8 7c0 2.21-1.79 4-4 4h-1.77c-1.93 0-3.5 1.57-3.5 3.5 0 0.52 0.12 1.02 0.33 1.47A8.1 8.1 0 0 1 12 20zm-5.5-9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+</vector>

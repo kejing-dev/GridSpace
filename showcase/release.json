@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "apk": "GridSpace-v1.0.0.apk",
+  "shots": ["shot1.jpg", "shot2.jpg"],
+  "video": null,
+  "github": "kejing-dev/GridSpace",
+  "lark_heading": "GridSpace | 格间",
+  "notes": "dry run: GridSpace-demo.mp4 not recorded (no adb/screenrecord); shots cropped from docs/screenshots/r8 (2026-10-13) while the APK was built 2026-10-17 and includes post-R8 toolbar changes"
+}

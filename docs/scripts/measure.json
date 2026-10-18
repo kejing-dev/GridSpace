@@ -1,0 +1,13 @@
+{
+  "_comment": "GridSpace R8 regions for the post-restart emulator viewpoint (docs/scripts/measure_r4.py, prefix r8; entry button re-measured on r8-entry.png 2026-10-17: mint rows 730..832). Copy, rename frames/regions for the new app. Thresholds: QA_REPORT_R8 §1.1.",
+  "preds": {},
+  "checks": [
+    {"name": "entry primary button", "frame": "entry", "kind": "color", "pred": "mint", "region": [300, 650, 1050, 900], "dp": [440, 80], "scale": 1.0, "min_px": [0, 92]},
+    {"name": "rail", "frame": "rail", "kind": "grid", "pred": "sat", "region": [1680, 500, 2160, 1800], "dp": 88, "scale": 1.5, "min_px": 92},
+    {"name": "label card ghost", "frame": "ghost", "ref": "edit-close", "kind": "diff", "region": [0, 500, 1600, 1250], "dp": [360, 96], "scale": 1.0, "left_of": "rail", "margin_px": 0},
+    {"name": "label card occupied", "frame": "occupied", "ref": "edit-close", "kind": "diff", "region": [0, 500, 1600, 1250], "dp": [360, 96], "scale": 1.0, "left_of": "rail"},
+    {"name": "brush row stepper", "frame": "workbench", "kind": "runs", "pred": "dark", "region": [250, 1880, 1960, 2080], "min_len": 90, "max_len": 140, "min_count": 5, "dp": 72, "scale": 1.0, "min_px": 92},
+    {"name": "colour card", "frame": "edit", "ref": "edit-close", "kind": "diff", "region": [0, 0, 2160, 2158], "dp": [560, 624], "scale": 1.0},
+    {"name": "colour card black band under Done", "frame": "edit", "kind": "black_share", "region": [1200, 1500, 2100, 1620], "max": 0.0}
+  ]
+}

@@ -135,6 +135,9 @@ data class EditorUiState(
     val mode: EditMode = EditMode.ADD,
     /** R8: the one brush's W x H x D, 1..16 clamped to the grid; remembered per editor session, not saved. */
     val brushSize: BrushSize = BrushSize.UNIT,
+    /** R10: the size row and the colour rail are opened from the toolbar; both closed by default. */
+    val showSizeRow: Boolean = false,
+    val showColorRail: Boolean = false,
     val selection: Set<Cell> = emptySet(),
     /** Accumulated nudge of the selection this session, shown in the steppers. */
     val translation: Cell = Cell.ZERO,
@@ -165,8 +168,9 @@ data class EditorUiState(
     val effectiveBrushSize: BrushSize
         get() = if (mode == EditMode.ADD || mode == EditMode.ERASE) brushSize else BrushSize.UNIT
 
+    /** The size row needs the toolbar toggle and a mode that uses a size (spec T.8). */
     val showBrushRow: Boolean
-        get() = mode == EditMode.ADD || mode == EditMode.ERASE
+        get() = showSizeRow && (mode == EditMode.ADD || mode == EditMode.ERASE)
 
     val showSelectionPanel: Boolean
         get() = mode == EditMode.SELECT && selection.isNotEmpty()
@@ -194,6 +198,11 @@ sealed class EditorEvent {
 
     /** Brush row stepper (R8): one axis of the brush size by +1 / -1, clamped to 1..min(16, grid). */
     data class SizeStep(val axis: Axis, val delta: Int) : EditorEvent()
+
+    /** Toolbar toggles (R10): show / hide the size row and the colour rail. */
+    data object ToggleSizeRow : EditorEvent()
+
+    data object ToggleColorRail : EditorEvent()
 
     /** Colour rail: the slot becomes current (and the one the popup edits). */
     data class SlotTapped(val index: Int) : EditorEvent()

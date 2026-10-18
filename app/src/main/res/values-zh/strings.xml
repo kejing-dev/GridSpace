@@ -3,6 +3,8 @@
 
     <!-- 入口窗 -->
     <string name="entry_title">格间 GridSpace</string>
+    <string name="toggle_size">尺寸</string>
+    <string name="toggle_colour">颜色</string>
     <string name="projects">项目</string>
     <string name="lang_zh">中</string>
     <string name="lang_en">EN</string>

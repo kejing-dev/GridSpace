@@ -32,7 +32,6 @@ import com.kejing.gridspace.domain.model.ColorMath
 import com.kejing.gridspace.domain.model.Palette
 import com.kejing.gridspace.domain.model.PalettePreset
 import com.kejing.gridspace.domain.model.SaveState
-import com.kejing.gridspace.ui.common.ActionIcon
 import com.kejing.gridspace.ui.common.GridSizes
 import com.kejing.gridspace.ui.common.LanguageSegment
 import com.kejing.gridspace.ui.common.SecondaryButton
@@ -91,9 +90,9 @@ object RailSizes {
 }
 
 /**
- * The persistent colour rail on the Volume's right (spec R4 N.3 / S.3): project name + save dot,
- * the action row (projects / export icon buttons and the 中/EN segment, moved here from the
- * system Toolbar in R5), three slots (tap = current slot, no long press), the preset tabs, the
+ * The colour rail on the Volume's right (spec R4 N.3 / S.3; opened from the toolbar since R10,
+ * T.8): project name + save dot, the 中/EN segment (projects / export went back to the toolbar),
+ * three slots (tap = current slot, no long press), the preset tabs, the
  * 4 x 6 swatch grid that writes straight into the current slot, and "Edit colour". While the eyedropper is active the slots, tabs and swatches are dimmed
  * and inert.
  */
@@ -111,8 +110,6 @@ fun ColorRail(state: State<ColorRailState>, onEvent: (EditorEvent) -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(RailSizes.ActionGap),
         ) {
-            ActionIcon(R.drawable.ic_folder, str(R.string.projects), onClick = { onEvent(EditorEvent.ProjectSheetOpened) })
-            ActionIcon(R.drawable.ic_upload, str(R.string.export), onClick = { onEvent(EditorEvent.ExportOpened) })
             LanguageSegment(
                 language = s.language,
                 onSelect = { onEvent(EditorEvent.LanguageSelected(it)) },

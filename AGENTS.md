@@ -130,9 +130,16 @@ Grep there before inventing an API.
   popup `EDITOR_UI_SCALE` 1.5, target label `LABEL_UI_SCALE` 1.4, brush row `BRUSH_UI_SCALE` 1.3.
   All spec numbers stay design dp; the Augment's anchor / alignment / offset stay outside the
   wrapper, in Volume-dp. Footprints must stay ≤ 1600 Volume-dp per axis (rail 430 × 1038 design =
-  645 × 1557). The system `Toolbar` content is **not** wrapped (spec S.1; it is invisible on the
-  emulator, the system presumably scales it [H]); it holds only 4 modes · undo / redo · reset
-  (1010 design dp); projects / export / 中|EN live in the colour rail's action row.
+  645 × 1557). The system `Toolbar` content is **not** wrapped (spec S.1;
+  it is invisible on the emulator, the system presumably scales it [H]). R10 (spec §T.8): the
+  Toolbar holds 4 modes · undo / redo · reset · **尺寸 / 颜色 `ToggleIconButton`s** (`ic_cube` /
+  `ic_palette`, 72) · projects / export (1376 design dp); the size row and the colour rail are
+  **closed by default** and shown only while their toggle is checked (`EditorUiState.showSizeRow`
+  / `showColorRail`, events `ToggleSizeRow` / `ToggleColorRail`, remembered per process in
+  `AppGraph.panels: PanelMemory`, never persisted). Hiding the rail also clears `picker`
+  (colour card / eyedropper). The rail's action row keeps only 中|EN. Demo scripts open the
+  panels explicitly (`walk`: size row before `size`, rail before `vivid`; `size` / `edit` probes
+  toggle first; `panels` script = workbench → size → rail → dragmove → edit, `r10.sh`).
 - `SpatialPopup(defaultMinWidth/Height)` is resolved in the *unscaled* density: with the content
   under `EditorScaled(1.5)` the window stayed 560 × 624 Volume-dp and clipped the 840 × 936 content
   (R5 `edit` shots). R6 dropped the popup for an Augment (see "Colour-edit card" below); if a
@@ -163,9 +170,27 @@ Grep there before inventing an API.
   Voxel / Bar / Box brushes are gone). The brush row (`BrushRow.kt`, R9: 1062 × 80 design dp, three groups
   `宽 X [−] n [+] | 高 Y … | 深 Z …` with 24 + VerticalDivider 1 × 48 + 24 between them, spec §T.7) is an
   Augment at (0.5, 1, 0.97) BottomCenter (0, −320, 0),
-  unscaled, hidden in PAINT / SELECT (which always act on 1 × 1 × 1 without changing the size).
+  unscaled, hidden in PAINT / SELECT (which always act on 1 × 1 × 1 without changing the size) and,
+  since R10, only shown while the toolbar's 尺寸 toggle is checked.
   Demo: walk step `size` (3 × 2 × 1 at (1, 0, 1), +6 cubes) replaced `bar` / `box`; the row of five
   at z 14 for the selection steps is now a silent 5 × 1 × 1 tap; probe script `gridspace_demo size`.
+- **Axis guides (R11, spec §T.9):** X and Z bars + arrowheads outside the plate (no Y guide: a
+  vertical bar and its letter stood in front of the model, user feedback), **centred on the edge
+  midpoints (±4.7 cells) and kept within 10.4 cells of the centre**: the 1200-dp plate's corners are
+  848 dp from the centre, beyond the 800-dp half-Volume, so full-edge bars, their arrow tips and
+  anything at a corner are clipped by the Volume at every yaw (first R11 build: nothing of the
+  guides showed; the pale line along the left plate edge is the Volume's own edge). `AxisGuides`
+  pure geometry → `SceneParts.axisGuides` one instanced entity, colour `GridColors.AxisGuide`
+  #AAB9B8 opaque, lifted 0.04 cell above the plate, rebuilt in `rebuildPlate`; letters X/Z are two 56-dp `Augment` chips (`AxisChip`, `EditorScreen`) on the front plane at the
+  projected arrow tips (`LabelAnchor.projectToFront`, recomputed with yaw / pitch in
+  `VoxelSceneView.onAnchors`). The SDK attachment path was tried and rejected on the emulator:
+  `attachmentPanelComponent(size = panelSize(56.dp, 56.dp))` (foundation) + core
+  `AttachmentPanelComponent` / `LookAtComponent` (`setViewerAsTarget()`, `NEGATIVE_Z`) on tip
+  entities under the unscaled `root` creates three 112 × 112 px attachment windows at the right
+  positions, but each renders as a blank pale square — the Compose content never shows (even with
+  the components `remember`ed; a fresh instance per recomposition additionally churned the windows).
+  The demo cannot orbit (yaw is view-local, no event), so a
+  rotated-view capture is not possible from the CLI.
 - **Target-label placement (R6/R7, replaces the R3/R5 side rules):** `LabelAnchor.place()`
   (`ui/editor/components/LabelAnchor.kt`, unit-tested) hangs the 360 × 96 design-dp card
   (`label` 20 + 24 icon / `caption` 16) *above* the target on the front plane (z 0.92,
@@ -277,6 +302,13 @@ Grep there before inventing an API.
 - **Export file-name cap (R8):** MediaStore builds unique names up to "name (32).vox"; after ~31
   demo exports of the same project the export fails ("Failed to build unique file"). Move old test
   exports out of `/sdcard/Download/GridSpace/` (e.g. to `GridSpace-archive/`) before a capture run.
+- **Two emulator instances (R11):** `pico-cli emulator stop` can leave the running emulator alive and
+  `start` then boots a second one (`emulator-5556` next to the user's `emulator-5554`, each with its
+  own app set); every plain `adb` call then fails with "more than one device". Pin the tooling with
+  `ANDROID_SERIAL=<id>` (adb, cap.sh, r5–r11 scripts) — `walk.sh` passes it to `pico-cli app launch
+  -d` — and kill only the instance you started (`adb -s <id> emu kill`). Also force-stop any
+  third-party app the user opened on the emulator before a capture (their windows sit in front of
+  the Volume: `com.technomancer.neonlong`, `com.uaybalam.conjure` seen in R11).
 - **Emulator viewpoint can drift without a restart (R8):** between R7 and R8 the head pose changed
   (uptime unchanged; probably the emulator window was dragged), moving the Volume so the rail ran off
   the frame. A `pico-cli emulator stop` / `start --avd Pico_Emulator_6_1_fresh` restored the default

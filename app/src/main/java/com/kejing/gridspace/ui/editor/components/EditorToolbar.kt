@@ -27,6 +27,8 @@ import com.pico.spatial.ui.design.PicoTheme
 import com.pico.spatial.ui.design.Text
 import com.pico.spatial.ui.design.ToggleButton
 import com.pico.spatial.ui.design.ToggleButtonDefaults
+import com.pico.spatial.ui.design.ToggleIconButton
+import com.pico.spatial.ui.design.ToggleIconButtonDefaults
 import com.pico.spatial.ui.design.VerticalDivider
 
 @StringRes
@@ -47,7 +49,10 @@ fun EditMode.iconRes(): Int =
         EditMode.SELECT -> R.drawable.ic_pointer
     }
 
-/** Spec R4 S.4: mode toggles 80 high / 160 min wide, 12 apart; dividers 16 + 1 x 40 + 16; 1010 wide in all. */
+/**
+ * Spec R4 S.4 + R10 T.8: mode toggles 80 high / 160 min wide, 12 apart; dividers 16 + 1 x 40 + 16;
+ * 676 + 33 + 152 + 33 + 72 + 33 + 152 + 33 + 152 + 40 = 1376 wide in all.
+ */
 object ToolbarSizes {
     val ModeHeight = 80.dp
     val ModeMinWidth = 160.dp
@@ -58,10 +63,10 @@ object ToolbarSizes {
 }
 
 /**
- * Content of the window-level Toolbar, the single main bar (spec R4 R.1 / S.4): four modes,
- * undo / redo and reset view. Projects / export and the 中/EN segment moved to the colour rail's
- * action row in R5 so the bar stays under 1600 Volume-dp if the system scales it. Everything on
- * it is one tap away (UX rule U2); no colour slots live here (they are on the colour rail).
+ * Content of the window-level Toolbar, the single main bar (spec R4 R.1 / S.4 / T.8): four modes,
+ * undo / redo, reset view, the 尺寸 / 颜色 panel toggles (R10: the size row and the colour rail are
+ * opened from here, closed by default) and projects / export. Only the 中/EN segment stays on the
+ * colour rail. Everything on it is one tap away (UX rule U2); no colour slots live here.
  */
 @Composable
 fun RowScope.EditorToolbarContent(state: EditorUiState, onEvent: (EditorEvent) -> Unit) {
@@ -76,6 +81,26 @@ fun RowScope.EditorToolbarContent(state: EditorUiState, onEvent: (EditorEvent) -
     ToolbarIcon(R.drawable.ic_redo, str(R.string.redo), enabled = state.canRedo) { onEvent(EditorEvent.Redo) }
     ToolbarDivider()
     ToolbarIcon(R.drawable.ic_locate, str(R.string.reset_view)) { onEvent(EditorEvent.ResetView) }
+    ToolbarDivider()
+    PanelToggle(R.drawable.ic_cube, str(R.string.toggle_size), checked = state.showSizeRow) { onEvent(EditorEvent.ToggleSizeRow) }
+    Spacer(Modifier.width(ToolbarSizes.IconGap))
+    PanelToggle(R.drawable.ic_palette, str(R.string.toggle_colour), checked = state.showColorRail) { onEvent(EditorEvent.ToggleColorRail) }
+    ToolbarDivider()
+    ToolbarIcon(R.drawable.ic_folder, str(R.string.projects)) { onEvent(EditorEvent.ProjectSheetOpened) }
+    Spacer(Modifier.width(ToolbarSizes.IconGap))
+    ToolbarIcon(R.drawable.ic_upload, str(R.string.export)) { onEvent(EditorEvent.ExportOpened) }
+}
+
+/** 72 dp ToggleIconButton for a panel (R10): checked while the panel is shown; [label] is the content description. */
+@Composable
+private fun PanelToggle(icon: Int, label: String, checked: Boolean, onToggle: () -> Unit) {
+    ToggleIconButton(
+        checked = checked,
+        onCheckedChange = { onToggle() },
+        size = ToggleIconButtonDefaults.toggleIconButtonSize(GridSizes.Control),
+    ) {
+        Icon(painterResource(icon), contentDescription = label, modifier = Modifier.size(GridSizes.Icon))
+    }
 }
 
 @Composable

@@ -1,0 +1,211 @@
+{
+ "overall": "pass",
+ "results": [
+  {
+   "lang": "zh",
+   "name": "entry primary button",
+   "frame": "entry",
+   "status": "pass",
+   "px": [
+    572,
+    105
+   ],
+   "bbox": [
+    366,
+    729,
+    938,
+    834
+   ]
+  },
+  {
+   "lang": "zh",
+   "name": "rail",
+   "frame": "rail",
+   "status": "pass",
+   "px": [
+    96,
+    95
+   ],
+   "bbox": [
+    1702,
+    936,
+    2113,
+    1532
+   ]
+  },
+  {
+   "lang": "zh",
+   "name": "label card ghost",
+   "frame": "ghost",
+   "status": "pass",
+   "px": [
+    558,
+    158
+   ],
+   "bbox": [
+    212,
+    1016,
+    770,
+    1174
+   ]
+  },
+  {
+   "lang": "zh",
+   "name": "label card occupied",
+   "frame": "occupied",
+   "status": "pass",
+   "px": [
+    590,
+    156
+   ],
+   "bbox": [
+    199,
+    1092,
+    789,
+    1248
+   ]
+  },
+  {
+   "lang": "zh",
+   "name": "brush row stepper",
+   "frame": "workbench",
+   "status": "pass",
+   "px": [
+    117,
+    28
+   ],
+   "bbox": [
+    250,
+    1882,
+    1960,
+    1908
+   ]
+  },
+  {
+   "lang": "zh",
+   "name": "colour card",
+   "frame": "edit",
+   "status": "pass",
+   "px": [
+    888,
+    992
+   ],
+   "bbox": [
+    1201,
+    460,
+    2089,
+    1452
+   ]
+  },
+  {
+   "lang": "zh",
+   "name": "colour card black band under Done",
+   "frame": "edit",
+   "status": "pass",
+   "share": 0.0
+  },
+  {
+   "lang": "en",
+   "name": "entry primary button",
+   "frame": "entry",
+   "status": "pass",
+   "px": [
+    572,
+    105
+   ],
+   "bbox": [
+    366,
+    729,
+    938,
+    834
+   ]
+  },
+  {
+   "lang": "en",
+   "name": "rail",
+   "frame": "rail",
+   "status": "pass",
+   "px": [
+    96,
+    95
+   ],
+   "bbox": [
+    1702,
+    940,
+    2113,
+    1532
+   ]
+  },
+  {
+   "lang": "en",
+   "name": "label card ghost",
+   "frame": "ghost",
+   "status": "pass",
+   "px": [
+    553,
+    158
+   ],
+   "bbox": [
+    213,
+    1014,
+    766,
+    1172
+   ]
+  },
+  {
+   "lang": "en",
+   "name": "label card occupied",
+   "frame": "occupied",
+   "status": "pass",
+   "px": [
+    591,
+    156
+   ],
+   "bbox": [
+    199,
+    1092,
+    790,
+    1248
+   ]
+  },
+  {
+   "lang": "en",
+   "name": "brush row stepper",
+   "frame": "workbench",
+   "status": "pass",
+   "px": [
+    117,
+    28
+   ],
+   "bbox": [
+    250,
+    1882,
+    1960,
+    1908
+   ]
+  },
+  {
+   "lang": "en",
+   "name": "colour card",
+   "frame": "edit",
+   "status": "pass",
+   "px": [
+    888,
+    990
+   ],
+   "bbox": [
+    1201,
+    460,
+    2089,
+    1450
+   ]
+  },
+  {
+   "lang": "en",
+   "name": "colour card black band under Done",
+   "frame": "edit",
+   "status": "pass",
+   "share": 0.0
+  }
+ ]
+}

@@ -844,6 +844,32 @@ SDK `Sheet` 内容宽固定 (实测 ≈ 410 dp, 1.19–1.31 px/dp)。`ProjectShe
 | 状态 | − 在 1 时禁用, + 在 min(16, N) 时禁用 (系统 alpha); 值 `labelPrimary`; 内容固定尺寸, 按钮带 hover | | 不变 |
 | 预期 px | 1.6–1.8 px/Volume-dp → 行 ≈ 1700–1920 px, 居中后在 2160 画面内 (余 ≥ 120 px); 若裁切, 轴标 88 → 80、间距 24 → 20 | | 验收: r9 `workbench` / `size` 两帧, 三组肉眼可分、无裁切、在底座前 |
 
+### T.8 R10 面板开关 (用户反馈: 尺寸行与颜色栏应由用户从底部工具栏打开; 取代 §R.1 / §S.4 工具栏表与 §S.3 行 2 "动作行" 的 项目 / 导出)
+
+| 项 | 值 |
+| --- | --- |
+| 工具栏 (系统 `Toolbar`, 样式不变) | `[添加][擦除][上色][选择] │ ↶ ↷ │ ⌖ │ [尺寸] [颜色] │ [项目] [导出]`; 尺寸 / 颜色 = `ToggleIconButton` 72 (图标 `ic_cube` / `ic_palette`, checked = 面板已显示), 项目 / 导出 = 原 `IconButton` 72 (从颜色栏动作行移回); 总宽 ≈ 676 + 33 + 152 + 33 + 72 + 33 + 152 + 33 + 152 + 40 = **1376** 设计 dp (< 1600) |
+| 状态 | `EditorUiState.showSizeRow` / `showColorRail`, 默认 **都为 false**; 会话内记忆 (`AppGraph.panels`, 不写盘); 事件 `ToggleSizeRow` / `ToggleColorRail` |
+| 显示规则 | 笔刷行 Augment: `showSizeRow && mode ∈ {添加, 擦除}`; 颜色栏 Augment: `showColorRail`; 颜色栏关闭时取色卡 / 取色条随之关闭 (`picker = null`); 选区面板仍自动 (选择模式有选区) |
+| 颜色栏 | 表头 (名 + 状态) 不变; 动作行只剩 中|EN; 换色唯一路径 = 打开颜色栏 |
+| 字串 | `toggle_size` 尺寸 / Size, `toggle_colour` 颜色 / Colour (`contentDescription`) |
+| 演示 | walk 在需要的步骤前显式切换 (size 步前开尺寸, vivid 前开颜色); 新脚本 `panels`: workbench (双关) → size → rail → dragmove → edit |
+
+### T.9 R11 坐标轴标注 (用户反馈: 尺寸行的 宽 X / 高 Y / 深 Z 与选区 ΔX·ΔY·ΔZ 需要可见的方向参照)
+
+`VoxelScene` 内的 3D 内容, 无碰撞体、不可交互、所有模式常驻; 几何在 `AxisGuides` (纯数据, 单测), 由 `SceneParts.axisGuides` 作为**一个实例化实体** (共享单位盒, 不新建网格) 随底座重建:
+
+| 件 | 几何 (格单位, 原点 = 底座顶面中心) |
+| --- | --- |
+| 前提 | 底座 1200 dp 大于 1600 dp Volume 的内切圆 (角到中心 848 dp > 800), 角与边端在任意 yaw 下都会被 Volume 裁掉 (§T.3 已注); 因此导线不沿整边, 而是**以边中点为中心**, 全部落在中心半径 ≤ 10.4 格 (780 dp) 内, 任意 yaw 可见 |
+| +X 杆 | 近边外侧 z = −N/2 − 0.35, x ∈ ±4.7 (以边中点为中心), 粗 0.08, 浮于底座顶面上 0.04 (y 0.04..0.12) |
+| +Z 杆 | 左边外侧 x = −N/2 − 0.35, z ∈ ±4.7, 同粗 |
+| +Y 杆 | **无** (用户反馈: 竖杆与字母挡住模型; 只保留底座上的 X / Z) |
+| 箭头 | 每杆 + 端三个递缩方块 0.35 / 0.25 / 0.15 连续堆叠; 尖端 = 杆端 + 0.75 (X / Z: 5.45 格) |
+| 颜色 | 全部一色 `GridColors.AxisGuide` #AAB9B8, 不透明 (85 % 时 0.08 格的杆在底座玻璃上几乎不可辨; 网格线色提亮, 不用 Mint / Coral) |
+| 不相交 | 杆在底座外 0.31..0.39 格, 不与底座或 (0, y, z) / (x, y, 0) 的方块相交; 半径 ≤ 10.4 格 (单测 `AxisGuidesTest`) |
+| 字母 | X / Z (`axis_x` / `axis_z`) 在尖端外 0.5 格。**实现 = 两个 `Augment` 小片** (56 × 56 设计 dp, 前面平面 scale 1.0, `AugmentContentAlignment.Center`, 锚点 = 尖端点按 `LabelAnchor.projectToFront` 投影到 z 0.92 面并夹到 [0.03, 0.97], 随 yaw / pitch 每帧重算, 与目标标签同一套投影): 轴色圆片 (#AAB9B8 @ 85 %) 上 `label` 20 M `BaseInk` 字母。SDK 路径已验证存在但在模拟器上不可用: `attachmentPanelComponent(size = panelSize(56.dp, 56.dp))` + `LookAtComponent(setViewerAsTarget, NEGATIVE_Z)` 挂在尖端实体上能建出 112 × 112 px 的附着窗 (logcat `isViewAttachment=true`), 位置正确, 但窗内只渲染一块空白浅色方片, Compose 内容 (圆片 + 字母) 不出现 → 按本节备选用 Augment |
+
 ---
 
 ## K4. 验收清单 R4 (追加在 v1.0 §K 之后; v1.0 K.1–K.45 仍有效, 与本节冲突时以本节为准)

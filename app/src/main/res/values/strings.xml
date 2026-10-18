@@ -3,6 +3,8 @@
 
     <!-- Entry window -->
     <string name="entry_title">GridSpace</string>
+    <string name="toggle_size">Size</string>
+    <string name="toggle_colour">Colour</string>
     <string name="projects">Projects</string>
     <string name="lang_zh">中</string>
     <string name="lang_en">EN</string>

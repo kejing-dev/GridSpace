@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kejing.gridspace.data.AppGraph
 import com.kejing.gridspace.data.Exporter
 import com.kejing.gridspace.data.ProjectCatalog
+import com.kejing.gridspace.data.PanelMemory
 import com.kejing.gridspace.data.ProjectStore
 import com.kejing.gridspace.domain.model.Axis
 import com.kejing.gridspace.domain.model.Cell
@@ -53,9 +54,11 @@ class EditorViewModel(
     /** Produces "Untitled k" in the current language; injected so the ViewModel stays resource-free. */
     internal val untitledName: (Int) -> String = { "Untitled $it" },
     internal val untitledPattern: Regex = Regex("Untitled (\\d+)"),
+    /** R10: session memory of the toolbar panel toggles (AppGraph.panels in the app). */
+    private val panels: PanelMemory = PanelMemory(),
 ) : ViewModel() {
 
-    internal val _state = MutableStateFlow(EditorUiState())
+    internal val _state = MutableStateFlow(EditorUiState(showSizeRow = panels.showSizeRow, showColorRail = panels.showColorRail))
     val state: StateFlow<EditorUiState> = _state.asStateFlow()
 
     private val history = History()
@@ -74,6 +77,17 @@ class EditorViewModel(
         when (event) {
             is EditorEvent.ModeSelected -> selectMode(event.mode)
             is EditorEvent.SizeStep -> changeBrushSize(event)
+            EditorEvent.ToggleSizeRow -> {
+                val show = !_state.value.showSizeRow
+                panels.showSizeRow = show
+                _state.update { it.copy(showSizeRow = show) }
+            }
+            EditorEvent.ToggleColorRail -> {
+                val show = !_state.value.showColorRail
+                panels.showColorRail = show
+                // Hiding the rail also closes the colour-edit card / eyedropper it hosts (spec T.8).
+                _state.update { it.copy(showColorRail = show, picker = if (show) it.picker else null) }
+            }
             is EditorEvent.SceneTapped -> if (!_state.value.sceneLocked) tapped(event.hit)
             is EditorEvent.PreviewStarted -> if (!_state.value.sceneLocked) previewStarted(event.hit)
             is EditorEvent.PreviewMoved -> if (!_state.value.sceneLocked) previewMoved(event.hit)
@@ -424,6 +438,7 @@ class EditorViewModel(
                 onLanguage = AppGraph::selectLanguage,
                 untitledName = untitledName,
                 untitledPattern = untitledPattern,
+                panels = AppGraph.panels,
             ) as T
     }
 

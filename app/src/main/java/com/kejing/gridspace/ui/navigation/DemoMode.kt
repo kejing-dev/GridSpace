@@ -32,7 +32,7 @@ import kotlinx.coroutines.delay
  * acknowledgement arrives (at most [ACK_TIMEOUT_MS]); the emulator's screencap can take several
  * seconds, so a fixed hold let the capture loop drift behind the script (QA D-11).
  */
-enum class DemoScript { SAMPLE, WALK, EXPORT, NEWPROJECT, EDIT, SIZE }
+enum class DemoScript { SAMPLE, WALK, EXPORT, NEWPROJECT, EDIT, SIZE, PANELS }
 
 object DemoMode {
     const val SETTING = "gridspace_demo"
@@ -85,6 +85,7 @@ object DemoMode {
             "newproject" -> DemoScript.NEWPROJECT
             "edit" -> DemoScript.EDIT
             "size" -> DemoScript.SIZE
+            "panels" -> DemoScript.PANELS
             else -> null
         }
 
@@ -96,11 +97,57 @@ object DemoMode {
         val ack: () -> String? = { Settings.Global.getString(context.contentResolver, ACK_SETTING)?.trim() }
         when (script) {
             DemoScript.SAMPLE -> return false
+            DemoScript.PANELS -> {
+                // R10: both panels closed (workbench) -> size row + 3 x 2 x 1 preview (size) -> colour
+                // rail (rail) -> selection drag-move with both closed (dragmove) -> colour card (edit).
+                delay(EDIT_SCRIPT_START_MS)
+                onEvent(EditorEvent.ModeSelected(EditMode.ADD))
+                markAndHold("workbench", ack)
+                onEvent(EditorEvent.ToggleSizeRow)
+                delay(WINDOW_SETTLE_MS)
+                onEvent(EditorEvent.SizeStep(Axis.X, 2))
+                onEvent(EditorEvent.SizeStep(Axis.Y, 1))
+                onEvent(EditorEvent.PreviewStarted(target(1, 0, 1)))
+                delay(WINDOW_SETTLE_MS)
+                markAndHold("size", ack)
+                onEvent(EditorEvent.Committed)
+                // Five cubes at z = 14 for the drag-move (5 x 1 x 1 tap), then the size row closes.
+                onEvent(EditorEvent.SizeStep(Axis.X, 2))
+                onEvent(EditorEvent.SizeStep(Axis.Y, -1))
+                onEvent(EditorEvent.SceneTapped(target(8, 0, 14)))
+                onEvent(EditorEvent.SizeStep(Axis.X, -4))
+                onEvent(EditorEvent.ToggleSizeRow)
+                onEvent(EditorEvent.ToggleColorRail)
+                delay(WINDOW_SETTLE_MS * 2)
+                markAndHold("rail", ack)
+                onEvent(EditorEvent.ToggleColorRail)
+                onEvent(EditorEvent.ModeSelected(EditMode.SELECT))
+                for (x in 8..12) onEvent(EditorEvent.SceneTapped(target(x, 0, 14)))
+                delay(WINDOW_SETTLE_MS)
+                onEvent(EditorEvent.SelectionDragStarted(Cell(8, 0, 14)))
+                delay(300)
+                onEvent(EditorEvent.SelectionDragMoved(Cell(2, 0, -1)))
+                delay(WINDOW_SETTLE_MS)
+                markAndHold("dragmove", ack)
+                onEvent(EditorEvent.SelectionDragCancelled)
+                onEvent(EditorEvent.SelectionClear)
+                onEvent(EditorEvent.ModeSelected(EditMode.ADD))
+                onEvent(EditorEvent.ToggleColorRail)
+                delay(WINDOW_SETTLE_MS)
+                onEvent(EditorEvent.ColorEditOpened)
+                delay(WINDOW_SETTLE_MS)
+                markAndHold("edit", ack)
+                onEvent(EditorEvent.PickerDismissed)
+                mark("done")
+                return false
+            }
             DemoScript.SIZE -> {
                 // R8 probe: the sized brush 3 x 2 x 1 previewed at (1, 0, 1) as in the walk, then released.
                 delay(EDIT_SCRIPT_START_MS)
                 onEvent(EditorEvent.ModeSelected(EditMode.ADD))
                 markAndHold("workbench", ack)
+                onEvent(EditorEvent.ToggleSizeRow)
+                delay(WINDOW_SETTLE_MS)
                 onEvent(EditorEvent.SizeStep(Axis.X, 2))
                 onEvent(EditorEvent.SizeStep(Axis.Y, 1))
                 onEvent(EditorEvent.PreviewStarted(target(1, 0, 1)))
@@ -114,6 +161,8 @@ object DemoMode {
                 // R6 placement probe: the colour-edit card, the eyedropper bar, closed. The rail and
                 // brush row of a fresh launch take ~30 s to settle (AGENTS), so wait before opening.
                 delay(EDIT_SCRIPT_START_MS)
+                onEvent(EditorEvent.ToggleColorRail)
+                delay(WINDOW_SETTLE_MS)
                 onEvent(EditorEvent.ColorEditOpened)
                 delay(WINDOW_SETTLE_MS)
                 markAndHold("edit", ack)
@@ -228,6 +277,9 @@ object DemoMode {
         delay(STEP_MS / 2)
         // Sized brush (R8): 3 x 2 x 1 from (1, 0, 1) on the free strip left of the floor; all six
         // cells are free, so the commit adds exactly 6 cubes (voxdump check in the report).
+        // R10: the size row is a toolbar panel, opened here (it hides itself in PAINT / SELECT).
+        onEvent(EditorEvent.ToggleSizeRow)
+        delay(WINDOW_SETTLE_MS)
         onEvent(EditorEvent.SizeStep(Axis.X, 2))
         onEvent(EditorEvent.SizeStep(Axis.Y, 1))
         hold(onEvent, target(1, 0, 1), "size", ack)
@@ -279,6 +331,9 @@ object DemoMode {
         // Colour rail: Vivid page, pick its first swatch into the current slot (U7), place one
         // cube with it; then the edit popup, the eyedropper (picks the coral pillar), close.
         onEvent(EditorEvent.ModeSelected(EditMode.ADD))
+        // R10: the colour rail is a toolbar panel; open it for the colour steps (it stays open).
+        onEvent(EditorEvent.ToggleColorRail)
+        delay(WINDOW_SETTLE_MS)
         onEvent(EditorEvent.SlotTapped(0))
         onEvent(EditorEvent.PresetSelected(PalettePreset.VIVID))
         onEvent(EditorEvent.SwatchPicked(PalettePreset.VIVID.colors[0]))
